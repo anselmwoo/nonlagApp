@@ -28,14 +28,11 @@ class NonLagMaStrategy:
         return ma
 
     def generate_signals(self):
-        # 选择价格源
         src = self.df[self.src_option].copy()
     
-        # 应用滤波器
         std_filtered = self.std_filter(src)
         clutter_filtered = self.clutter_filter(std_filtered)
     
-        # 计算NonLagMA
         nlma = self.nonlag_ma(clutter_filtered)
     
         self.result['price'] = src
@@ -45,8 +42,12 @@ class NonLagMaStrategy:
         buy_signal = (src > nlma) & (src.shift(1) <= nlma.shift(1))
         sell_signal = (src < nlma) & (src.shift(1) >= nlma.shift(1))
     
-        self.result.loc[buy_signal.fillna(False), 'signal'] = 1
-        self.result.loc[sell_signal.fillna(False), 'signal'] = -1
+        # 转成bool ndarray，避免索引不匹配问题
+        buy_mask = buy_signal.fillna(False).values
+        sell_mask = sell_signal.fillna(False).values
+    
+        self.result.loc[buy_mask, 'signal'] = 1
+        self.result.loc[sell_mask, 'signal'] = -1
     
         return self.result
-
+    

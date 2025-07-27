@@ -1,0 +1,6 @@
+# requirements.txt
+streamlit>=1.35.0
+pandas>=2.0.0
+yfinance>=0.2.0
+pandas-ta>=0.3.14
+plotly>=5.21.0

@@ -29,21 +29,24 @@ class NonLagMaStrategy:
 
     def generate_signals(self):
         # 选择价格源
-        src = self.df[self.src_option]
-
+        src = self.df[self.src_option].copy()
+    
         # 应用滤波器
         std_filtered = self.std_filter(src)
         clutter_filtered = self.clutter_filter(std_filtered)
-
+    
         # 计算NonLagMA
         nlma = self.nonlag_ma(clutter_filtered)
-
+    
         self.result['price'] = src
         self.result['nonlagma'] = nlma
-
-        # 产生买卖信号
         self.result['signal'] = 0
-        self.result.loc[(src > nlma) & (src.shift(1) <= nlma.shift(1)), 'signal'] = 1   # 买入信号
-        self.result.loc[(src < nlma) & (src.shift(1) >= nlma.shift(1)), 'signal'] = -1  # 卖出信号
-
+    
+        buy_signal = (src > nlma) & (src.shift(1) <= nlma.shift(1))
+        sell_signal = (src < nlma) & (src.shift(1) >= nlma.shift(1))
+    
+        self.result.loc[buy_signal.fillna(False), 'signal'] = 1
+        self.result.loc[sell_signal.fillna(False), 'signal'] = -1
+    
         return self.result
+

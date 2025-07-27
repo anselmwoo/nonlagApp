@@ -42,12 +42,12 @@ class NonLagMaStrategy:
         buy_signal = (src > nlma) & (src.shift(1) <= nlma.shift(1))
         sell_signal = (src < nlma) & (src.shift(1) >= nlma.shift(1))
     
-        # 转成bool ndarray，避免索引不匹配问题
-        buy_mask = buy_signal.fillna(False).values
-        sell_mask = sell_signal.fillna(False).values
+        buy_signal = buy_signal.fillna(False)
+        sell_signal = sell_signal.fillna(False)
     
-        self.result.loc[buy_mask, 'signal'] = 1
-        self.result.loc[sell_mask, 'signal'] = -1
+        self.result.loc[buy_signal[buy_signal].index, 'signal'] = 1
+        self.result.loc[sell_signal[sell_signal].index, 'signal'] = -1
     
         return self.result
+
     

@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objs as go
-from strategy import non_lag_ma_strategy
+from strategy import NonLagMaStrategy
 
 st.set_page_config(page_title="Heikin-Ashi NonLagMA Strategy", layout="wide")
 st.title("📈 Heikin-Ashi + STD/Clutter Filtered NonLagMA Strategy")
